@@ -38,11 +38,11 @@ func (c *chronicle) Start() error {
 		return errors.New("no task is registered")
 	}
 	for _, v := range c.tasks {
+		c.wg.Add(1)
 		err := v.cron()
 		if err != nil {
 			return err
 		}
-		c.wg.Add(1)
 	}
 	c.wg.Wait()
 	return nil
