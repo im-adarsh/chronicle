@@ -3,6 +3,7 @@ package chronicle
 import (
 	"context"
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 )
@@ -19,7 +20,7 @@ type task struct {
 
 func NewChronicle() Chronicle {
 	c := chronicle{}
-	c.wg = &sync.WaitGroup{}
+	c.wg = new(sync.WaitGroup)
 	c.tasks = map[string]task{}
 	return &c
 }
@@ -34,15 +35,25 @@ func (c *chronicle) Register(ctx context.Context, name string, duration time.Dur
 }
 
 func (c *chronicle) Start() error {
+	fmt.Println(fmt.Sprintf("Starting %d tasks", len(c.tasks)))
 	if len(c.tasks) == 0 {
 		return errors.New("no task is registered")
 	}
-	for _, v := range c.tasks {
-		c.wg.Add(1)
-		err := v.cron()
-		if err != nil {
-			return err
-		}
+	c.wg.Add(len(c.tasks))
+	for n, v := range c.tasks {
+		tt := time.NewTicker(v.duration)
+		tc := make(chan bool)
+		go func() {
+			for {
+				select {
+				case t := <-tt.C:
+					fmt.Println(fmt.Sprintf("[Tick %s] at %+v ", n, t))
+					_ = v.cron()
+				case <-tc:
+					return
+				}
+			}
+		}()
 	}
 	c.wg.Wait()
 	return nil
