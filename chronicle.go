@@ -43,13 +43,19 @@ func (c *chronicle) Start() error {
 	for n, v := range c.tasks {
 		tt := time.NewTicker(v.duration)
 		tc := make(chan bool)
+		n_ := n
+		v_ := v
 		go func() {
+			tt_ := tt
+			tc_ := tc
+
+			fmt.Println("Starting task : ", n_)
 			for {
 				select {
-				case t := <-tt.C:
-					fmt.Println(fmt.Sprintf("[Tick %s] at %+v ", n, t))
-					_ = v.cron()
-				case <-tc:
+				case t := <-tt_.C:
+					fmt.Println(fmt.Sprintf("[Tick %s] at %+v ", n_, t))
+					_ = v_.cron()
+				case <-tc_:
 					return
 				}
 			}
