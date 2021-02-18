@@ -4,7 +4,7 @@ Chronicle allows client to register set of workers/ cron function to be triggere
 
 ## Installation
 ```go
-go get -u github.com/im-adarsh/chronicles
+go get -u github.com/im-adarsh/chronicle
 ```
 ## How to use
 ```go
