@@ -3,11 +3,11 @@
 Chronicle allows client to register set of workers/ cron function to be triggered in defined interval of time.
 
 ## Installation
-```
+```go
 go get -u github.com/im-adarsh/chronicles
 ```
 ## How to use
-```
+```go
 package main
 
 import (
