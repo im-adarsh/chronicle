@@ -20,12 +20,16 @@ import (
 
 func main() {
 
+
 	ctx := context.Background()
+
 	c := chronicle.NewChronicle()
 	c.Register(ctx, "worker_1", time.Second*2, doTask1)
 	c.Register(ctx, "worker_2", time.Second*4, doTask2)
 	c.Register(ctx, "worker_3", time.Second*6, doTask3)
+
 	c.Start()
+	defer c.Close()
 }
 
 func doTask1() error {
